@@ -1,0 +1,282 @@
+openapi: 3.0.2
+info:
+  contact:
+    email: thomas.schaffter@sagebionetworks.org
+    name: The Tool Registry Team
+    url: https://github.com/Sage-Bionetworks/tool-registry-schemas
+  description: |
+    The OpenAPI specification implemented by the Tool Registry.
+    # Overview
+    TBA
+  license:
+    name: Apache 2.0
+    url: https://github.com/Sage-Bionetworks/tool-registry-schemas
+  title: Tool Registry API
+  version: 0.1.0
+  x-logo:
+    url: https://Sage-Bionetworks.github.io/tool-registry-schemas/logo.png
+servers:
+- url: http://example.com/api/v1
+- url: https://example.com/api/v1
+tags:
+- description: Operations about tools
+  name: Tool
+paths:
+  /tools:
+    get:
+      description: Returns the tools in the registry
+      operationId: list_tools
+      parameters:
+      - description: Maximum number of results returned
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          maximum: 100
+          minimum: 10
+          type: integer
+        style: form
+      - description: Index of the first result that must be returned
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 0
+          minimum: 0
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageOfTools'
+          description: Success
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+      summary: List the tools in the registry
+      tags:
+      - Tool
+      x-openapi-router-controller: openapi_server.controllers.tool_controller
+    post:
+      description: Add a tool
+      operationId: create_tool
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tool'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tool'
+          description: Success
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request conflicts with current state of the target resource
+      summary: Add a tool
+      tags:
+      - Tool
+      x-openapi-router-controller: openapi_server.controllers.tool_controller
+components:
+  responses:
+    Unauthorized:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Unauthorized
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: The specified resource was not found
+    Conflict:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: The request conflicts with current state of the target resource
+  schemas:
+    ResponsePageMetadata:
+      description: A page of results
+      properties:
+        offset:
+          description: Index of the first result that must be returned
+          type: integer
+        limit:
+          description: Maximum number of results returned
+          type: integer
+        links:
+          $ref: '#/components/schemas/ResponsePageMetadata_links'
+      required:
+      - limit
+      - links
+      - offset
+      type: object
+    Tool:
+      description: A tool
+      example:
+        license: apache-2.0
+        authorEmail: author@example.com
+        author: Example Author
+        name: awesome-tool
+        description: An awesome tool that returns 42
+        id: id
+        repository: github:awesome-org/awesome-tool
+        version: 1.0.0
+        url: https://openapi-generator.tech
+      properties:
+        id:
+          description: The ID of the tool
+          readOnly: true
+          type: string
+        name:
+          description: The tool name
+          example: awesome-tool
+          maxLength: 60
+          minLength: 3
+          pattern: ^[a-z0-9]+(?:-[a-z0-9]+)*$
+          type: string
+        version:
+          description: The version of the tool (SemVer string)
+          example: 1.0.0
+          minLength: 1
+          pattern: ^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$
+          type: string
+        license:
+          description: The license of this service (spdx.org/licenses Identifier)
+          enum:
+          - afl-3.0
+          - apache-2.0
+          - artistic-2.0
+          - bsl-1.0
+          - bsd-2-clause
+          - bsd-3-clause
+          - bsd-3-clause-clear
+          - cc
+          - cc0-1.0
+          - cc-by-4.0
+          - cc-by-sa-4.0
+          - wtfpl
+          - ecl-2.0
+          - epl-1.0
+          - epl-2.0
+          - eupl-1.1
+          - agpl-3.0
+          - gpl
+          - gpl-2.0
+          - gpl-3.0
+          - lgpl
+          - lgpl-2.1
+          - lgpl-3.0
+          - isc
+          - lppl-1.3c
+          - ms-pl
+          - mit
+          - mpl-2.0
+          - osl-3.0
+          - postgresql
+          - ofl-1.1
+          - ncsa
+          - unlicense
+          - zlib
+          example: apache-2.0
+          type: string
+        repository:
+          description: The place where the code lives
+          example: github:awesome-org/awesome-tool
+          type: string
+        description:
+          description: A short, one-sentence summary of the service
+          example: An awesome tool that returns 42
+          maxLength: 100
+          type: string
+        author:
+          description: The author of the tool
+          example: Example Author
+          type: string
+        authorEmail:
+          description: The email address of the author
+          example: author@example.com
+          format: email
+          type: string
+        url:
+          description: The URL to the homepage of the tool
+          format: uri
+          type: string
+      type: object
+    PageOfTools:
+      allOf:
+      - $ref: '#/components/schemas/ResponsePageMetadata'
+      - $ref: '#/components/schemas/PageOfTools_allOf'
+      description: A page of Tools
+      type: object
+    Error:
+      description: Problem details (tools.ietf.org/html/rfc7807)
+      properties:
+        title:
+          description: A human readable documentation for the problem type
+          type: string
+        status:
+          description: The HTTP status code
+          type: integer
+        detail:
+          description: A human readable explanation specific to this occurrence of
+            the problem
+          type: string
+        type:
+          description: An absolute URI that identifies the problem type
+          type: string
+      required:
+      - status
+      - title
+      type: object
+    ResponsePageMetadata_links:
+      description: Links to navigate to different pages of results
+      properties:
+        next:
+          description: Link to the next page of results
+          format: uri
+          type: string
+      type: object
+    PageOfTools_allOf:
+      properties:
+        tools:
+          description: An array of Tools
+          items:
+            $ref: '#/components/schemas/Tool'
+          type: array
+      type: object

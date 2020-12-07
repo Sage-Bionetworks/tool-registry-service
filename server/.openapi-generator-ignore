@@ -30,8 +30,8 @@ setup.py
 # this list has been defined after the generation of the initial codebase
 .dockerignore
 Dockerfile
-#openapi_server/__main__.py
-#openapi_server/controllers/security_controller_.py
+openapi_server/__main__.py
+openapi_server/controllers/security_controller_.py
 requirements.txt
 test-requirements.txt
 tox.ini

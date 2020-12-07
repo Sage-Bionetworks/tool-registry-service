@@ -3,7 +3,7 @@ version: "3.8"
 services:
   db:
     image: nlpsandbox/mongo:0.1.0
-    container_name: rocc-db
+    container_name: tool-registry-db
     restart: always
     environment:
       - MONGO_INITDB_ROOT_USERNAME
@@ -17,11 +17,11 @@ services:
       - "${MONGO_PORT}:27017"
 
   api:
-    image: sagebionetworks/rocc:latest
+    image: sagebionetworks/tool-registry:latest
     build:
       context: server
       dockerfile: Dockerfile
-    container_name: rocc-api
+    container_name: tool-registry-api
     environment:
       - SERVER_PROTOCOL
       - SERVER_DOMAIN

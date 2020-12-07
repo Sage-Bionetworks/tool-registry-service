@@ -1,2 +1,3 @@
-# tool-registry
+# Tool Registry
+
 A tool registry

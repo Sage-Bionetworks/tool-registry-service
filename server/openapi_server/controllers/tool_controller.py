@@ -1,10 +1,9 @@
 import connexion
-import six
 
-from openapi_server.models.error import Error  # noqa: E501
-from openapi_server.models.page_of_tools import PageOfTools  # noqa: E501
+# from openapi_server.models.error import Error  # noqa: E501
+# from openapi_server.models.page_of_tools import PageOfTools  # noqa: E501
 from openapi_server.models.tool import Tool  # noqa: E501
-from openapi_server import util
+# from openapi_server import util
 
 
 def create_tool(tool):  # noqa: E501
@@ -19,6 +18,7 @@ def create_tool(tool):  # noqa: E501
     """
     if connexion.request.is_json:
         tool = Tool.from_dict(connexion.request.get_json())  # noqa: E501
+        print(f"tool: {tool}")
     return 'do some magic!'
 
 

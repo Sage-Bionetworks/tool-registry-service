@@ -25,7 +25,14 @@ def create_tool(tool=None):  # noqa: E501
         try:
             tool = Tool.from_dict(connexion.request.get_json())
             db_tool = DbTool(
-                name=tool.name
+                name=tool.name,
+                version=tool.version,
+                license=tool.license,
+                repository=tool.repository,
+                description=tool.description,
+                author=tool.author,
+                authorEmail=tool.author_email,
+                url=tool.url
             ).save()
             res = Tool.from_dict(db_tool.to_dict())
             status = 200

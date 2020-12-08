@@ -154,7 +154,7 @@ components:
         author: Example Author
         name: awesome-tool
         description: An awesome tool that returns 42
-        id: id
+        # id: id
         repository: github:awesome-org/awesome-tool
         version: 1.0.0
         url: https://openapi-generator.tech
